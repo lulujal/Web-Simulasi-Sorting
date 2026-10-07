@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Sorting Interaktif</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ============ HEADER ============ -->
+    <header class="app-header">
+        <div class="header-content">
+            <h1>🔢 Simulasi Sorting Interaktif</h1>
+            <p class="subtitle">Pelajari Insertion Sort &amp; Selection Sort secara Visual dan Interaktif</p>
+        </div>
+    </header>
+
+    <!-- ============ NAVIGATION TABS ============ -->
+    <nav class="tab-nav">
+        <div class="tab-container">
+            <button class="tab-btn active" data-mode="interactive">
+                <span class="tab-icon">🖐️</span>
+                <span class="tab-label">Interaktif Manual</span>
+            </button>
+            <button class="tab-btn" data-mode="tracing">
+                <span class="tab-icon">👣</span>
+                <span class="tab-label">Tracing Terpandu</span>
+            </button>
+            <button class="tab-btn" data-mode="race">
+                <span class="tab-icon">🏁</span>
+                <span class="tab-label">Balapan Algoritma</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- ============================================================ -->
+        <!-- MODE 1: INTERAKTIF MANUAL                                    -->
+        <!-- ============================================================ -->
+        <section id="mode-interactive" class="mode-panel active">
+            <div class="panel-header">
+                <h2>Mode Interaktif Manual</h2>
+                <p>Jadilah "mesin pengurut"! Temukan dan pindahkan blok angka ke posisi yang benar.</p>
+            </div>
+
+            <div class="toolbar">
+                <div class="toolbar-group">
+                    <label for="algo-interactive">Algoritma:</label>
+                    <select id="algo-interactive">
+                        <option value="selection">Selection Sort</option>
+                        <option value="insertion">Insertion Sort</option>
+                    </select>
+                </div>
+                <div class="toolbar-group">
+                    <label for="size-interactive">Elemen:</label>
+                    <select id="size-interactive">
+                        <option value="5">5</option>
+                        <option value="6" selected>6</option>
+                        <option value="8">8</option>
+                    </select>
+                </div>
+                <button id="btn-new-interactive" class="btn btn-primary">🔄 Array Baru</button>
+                <button id="btn-reset-interactive" class="btn btn-outline">↩️ Reset</button>
+            </div>
+
+            <div id="instruction-interactive" class="instruction-box">
+                <div class="instruction-icon">💡</div>
+                <div class="instruction-text">Pilih algoritma dan klik <strong>"Array Baru"</strong> untuk memulai!</div>
+            </div>
+
+            <div class="step-tracker" id="tracker-interactive">
+                <span>Iterasi: <strong id="iter-interactive">-</strong></span>
+                <span class="sep">|</span>
+                <span>Langkah: <strong id="step-interactive">-</strong></span>
+            </div>
+
+            <div id="array-interactive" class="array-area">
+                <div class="array-blocks" id="blocks-interactive"></div>
+                <div class="insert-markers" id="markers-interactive"></div>
+            </div>
+
+            <div id="feedback-interactive" class="feedback hidden"></div>
+
+            <div class="progress-track">
+                <div id="progress-interactive" class="progress-fill" style="width: 0%"></div>
+            </div>
+
+            <div id="complete-interactive" class="complete-msg hidden">
+                🎉 Selamat! Array berhasil diurutkan!
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- MODE 2: TRACING TERPANDU                                     -->
+        <!-- ============================================================ -->
+        <section id="mode-tracing" class="mode-panel">
+            <div class="panel-header">
+                <h2>Mode Tracing Terpandu</h2>
+                <p>Amati langkah demi langkah bagaimana algoritma sorting bekerja.</p>
+            </div>
+
+            <div class="toolbar">
+                <div class="toolbar-group">
+                    <label for="algo-tracing">Algoritma:</label>
+                    <select id="algo-tracing">
+                        <option value="selection">Selection Sort</option>
+                        <option value="insertion">Insertion Sort</option>
+                    </select>
+                </div>
+                <div class="toolbar-group">
+                    <label for="size-tracing">Elemen:</label>
+                    <select id="size-tracing">
+                        <option value="5">5</option>
+                        <option value="6" selected>6</option>
+                        <option value="8">8</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+                <div class="toolbar-group">
+                    <label for="speed-tracing">Kecepatan:</label>
+                    <input type="range" id="speed-tracing" min="1" max="5" value="3" class="speed-slider">
+                    <span id="speed-label-tracing" class="speed-val">3×</span>
+                </div>
+                <button id="btn-new-tracing" class="btn btn-primary">🔄 Array Baru</button>
+            </div>
+
+            <div class="playback-bar">
+                <button id="btn-reset-tracing" class="btn btn-icon" title="Reset ke Awal">⏮</button>
+                <button id="btn-prev-tracing" class="btn btn-icon" title="Langkah Sebelumnya">⏪</button>
+                <button id="btn-play-tracing" class="btn btn-icon btn-play" title="Play">▶️</button>
+                <button id="btn-pause-tracing" class="btn btn-icon hidden" title="Pause">⏸️</button>
+                <button id="btn-next-tracing" class="btn btn-icon" title="Langkah Berikutnya">⏩</button>
+            </div>
+
+            <div class="step-tracker">
+                <span>Langkah: <strong id="step-counter-tracing">0 / 0</strong></span>
+                <span class="sep">|</span>
+                <span>Perbandingan: <strong id="comp-tracing">0</strong></span>
+                <span class="sep">|</span>
+                <span>Pertukaran: <strong id="swap-tracing">0</strong></span>
+            </div>
+
+            <div id="array-tracing" class="array-area">
+                <div class="array-blocks" id="blocks-tracing"></div>
+            </div>
+
+            <div id="narrative-tracing" class="narrative-box">
+                <div class="narrative-icon">📖</div>
+                <div id="narrative-text-tracing" class="narrative-text">
+                    Tekan <strong>"Array Baru"</strong> lalu gunakan tombol kontrol untuk memulai simulasi.
+                </div>
+            </div>
+
+            <div class="progress-track">
+                <div id="progress-tracing" class="progress-fill" style="width: 0%"></div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- MODE 3: BALAPAN ALGORITMA                                    -->
+        <!-- ============================================================ -->
+        <section id="mode-race" class="mode-panel">
+            <div class="panel-header">
+                <h2>Mode Balapan Algoritma</h2>
+                <p>Bandingkan performa Insertion Sort vs Selection Sort secara berdampingan!</p>
+            </div>
+
+            <div class="toolbar">
+                <div class="toolbar-group wide">
+                    <label for="input-race">Data Input:</label>
+                    <input type="text" id="input-race" placeholder="Masukkan angka dipisah koma, misal: 64, 25, 12, 22, 11" class="text-input">
+                </div>
+                <div class="toolbar-group">
+                    <label for="size-race">Random:</label>
+                    <select id="size-race">
+                        <option value="5">5</option>
+                        <option value="8" selected>8</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                    <button id="btn-random-race" class="btn btn-outline btn-sm">🎲 Acak</button>
+                </div>
+            </div>
+
+            <div class="toolbar">
+                <div class="toolbar-group">
+                    <label>Preset:</label>
+                    <button class="btn btn-chip" data-preset="random">🎲 Acak</button>
+                    <button class="btn btn-chip" data-preset="nearly">📊 Hampir Terurut</button>
+                    <button class="btn btn-chip" data-preset="reversed">🔄 Terbalik</button>
+                    <button class="btn btn-chip" data-preset="few-unique">🔢 Sedikit Unik</button>
+                    <button class="btn btn-chip" data-preset="sensor">📡 Sensor HC-SR04</button>
+                </div>
+                <div class="toolbar-group">
+                    <label for="speed-race">Kecepatan:</label>
+                    <input type="range" id="speed-race" min="1" max="5" value="3" class="speed-slider">
+                    <span id="speed-label-race" class="speed-val">3×</span>
+                </div>
+            </div>
+
+            <div class="race-actions">
+                <button id="btn-start-race" class="btn btn-success btn-lg">🏁 Mulai Balapan!</button>
+                <button id="btn-reset-race" class="btn btn-outline btn-lg">↩️ Reset</button>
+            </div>
+
+            <div id="race-arena" class="race-arena">
+                <div class="race-lane">
+                    <div class="lane-header insertion-header">
+                        <h3>🔵 Insertion Sort</h3>
+                    </div>
+                    <div class="array-blocks race-blocks" id="blocks-race-insertion"></div>
+                    <div class="lane-stats">
+                        <span>Perbandingan: <strong id="comp-race-insertion">0</strong></span>
+                        <span>Pertukaran: <strong id="swap-race-insertion">0</strong></span>
+                        <span id="status-race-insertion" class="status-badge waiting">Menunggu</span>
+                    </div>
+                </div>
+                <div class="race-divider"></div>
+                <div class="race-lane">
+                    <div class="lane-header selection-header">
+                        <h3>🟠 Selection Sort</h3>
+                    </div>
+                    <div class="array-blocks race-blocks" id="blocks-race-selection"></div>
+                    <div class="lane-stats">
+                        <span>Perbandingan: <strong id="comp-race-selection">0</strong></span>
+                        <span>Pertukaran: <strong id="swap-race-selection">0</strong></span>
+                        <span id="status-race-selection" class="status-badge waiting">Menunggu</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dashboard-race" class="dashboard hidden">
+                <h3>📊 Dasbor Statistik</h3>
+                <div class="dash-grid">
+                    <div class="dash-card">
+                        <div class="dash-title">Total Perbandingan</div>
+                        <div class="dash-compare">
+                            <div class="dash-algo insertion">
+                                <span class="algo-name">Insertion Sort</span>
+                                <span id="dash-comp-insertion" class="algo-val">0</span>
+                            </div>
+                            <span class="vs">vs</span>
+                            <div class="dash-algo selection">
+                                <span class="algo-name">Selection Sort</span>
+                                <span id="dash-comp-selection" class="algo-val">0</span>
+                            </div>
+                        </div>
+                        <div class="bar-chart">
+                            <div id="bar-comp-insertion" class="bar insertion-bar" style="width:50%"><span class="bar-label">0</span></div>
+                            <div id="bar-comp-selection" class="bar selection-bar" style="width:50%"><span class="bar-label">0</span></div>
+                        </div>
+                    </div>
+                    <div class="dash-card">
+                        <div class="dash-title">Total Pertukaran / Pergeseran</div>
+                        <div class="dash-compare">
+                            <div class="dash-algo insertion">
+                                <span class="algo-name">Insertion Sort</span>
+                                <span id="dash-swap-insertion" class="algo-val">0</span>
+                            </div>
+                            <span class="vs">vs</span>
+                            <div class="dash-algo selection">
+                                <span class="algo-name">Selection Sort</span>
+                                <span id="dash-swap-selection" class="algo-val">0</span>
+                            </div>
+                        </div>
+                        <div class="bar-chart">
+                            <div id="bar-swap-insertion" class="bar insertion-bar" style="width:50%"><span class="bar-label">0</span></div>
+                            <div id="bar-swap-selection" class="bar selection-bar" style="width:50%"><span class="bar-label">0</span></div>
+                        </div>
+                    </div>
+                    <div class="dash-card wide">
+                        <div class="dash-title">Kondisi Data Masukan</div>
+                        <p id="dash-condition" class="dash-desc">-</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ============ QUIZ MODAL ============ -->
+    <div id="quiz-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <div class="modal-header">🧠 Kuis Interaktif</div>
+            <p id="quiz-question" class="quiz-q"></p>
+            <div id="quiz-options" class="quiz-opts"></div>
+            <div id="quiz-feedback" class="quiz-fb hidden"></div>
+            <button id="quiz-continue" class="btn btn-primary hidden">Lanjutkan ▶️</button>
+        </div>
+    </div>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="app-footer">
+        <p>Simulasi Sorting Interaktif — Media Pembelajaran Algoritma Pengurutan</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
